@@ -1,0 +1,46 @@
+close all;
+clear all;
+clc;
+
+I = imread('sekil3.jpg');
+
+level = graythresh(I);
+
+I2 = im2bw(I, level);
+
+%Komþuluk bulunmayan ayrý objeleri belirle
+[L, NUM] = bwlabel(I2, 8);
+
+delikli = 0;
+
+disp(sprintf('Toplam %d adet parça tespit edildi.\n',NUM));
+
+for i=1:NUM
+    
+    %Gruplardaki grup numarasýný 1 ile deðiþtir.
+    r = changem(L==i, 1, i);
+   
+    %1 ve 0'lardan oluþan resmi ters çevir
+    %objenin etrafý beyaz kendisi siyah olur.
+    %eðer obje delikli ise birden fazla komþu olmayan beyaz parça
+    %ortaya çýkar. Bu da o objenin delikli olduðunu gösterir.
+    r2 = imcomplement(r);
+   
+    %Ters çevrilmiþ resim içinde ayrý parçaac.
+    [rL rNUM] = bwlabel(r2,8);
+
+    if rNUM > 1
+        delikli = delikli + 1;
+     
+    end
+    
+end
+
+disp(sprintf('Parçalarýn %d tanesi delikli, kalan %d tanesi ise bütündür.',delikli, NUM-delikli));
+
+imshow(I);
+
+
+    
+    
+    
